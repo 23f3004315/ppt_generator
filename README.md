@@ -6,7 +6,7 @@ An intelligent web application that transforms raw text, prose, or markdown into
 
 ### 🚀 Live Demo
 
-**[<< https://huggingface.co/spaces/23f3004315/b1 >>]**
+**https://huggingface.co/spaces/23f3004315/b1**
 
 ### ✨ Key Features
 
