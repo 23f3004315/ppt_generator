@@ -1,0 +1,10 @@
+streamlit
+python-pptx
+openai
+google-generativeai
+anthropic
+typing-extensions
+markdown
+nltk
+spacy
+textstat
