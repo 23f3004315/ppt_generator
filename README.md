@@ -8,32 +8,60 @@ An intelligent web application that transforms raw text, prose, or markdown into
 
 **https://huggingface.co/spaces/23f3004315/b1**
 
-### ✨ Key Features
+### ✨ Features
 
-* **Multi-Provider AI:** Supports leading LLMs including **Google Gemini**, **OpenAI (GPT-4o)**, and **Anthropic Claude**.
-* **True Template Adaptation:** The app intelligently analyzes the slide layouts available in *your* uploaded `.pptx` or `.potx` file.
-* **Content-Aware Structuring:** The AI parses your text and intelligently maps it to appropriate titles and bullet points for the detected layouts.
-* **Markdown Support:** Paste content directly from markdown documents; the app will clean and process it.
-* **AI Guidance:** Steer the AI with optional prompts (e.g., "make this a sales pitch") to control the tone and structure.
-* **Secure & Private:** Your API keys are used only for the current session and are never stored or logged.
+#### Core Functionality
+* **Smart Text Processing:** Paste large chunks of text, markdown, or long-form prose.
+* **Template Style Preservation:** Maintains your template's layouts, fonts, colors, and visual elements.
+* **Multi-LLM Support:** Works with OpenAI, Anthropic Claude, and Google Gemini.
+* **Intelligent Slide Mapping:** Automatically determines the optimal number of slides based on content.
+* **Image Reuse:** Extracts and reuses images from your uploaded template.
+
+#### Enhanced Features
+* **Speaker Notes Generation:** AI-powered speaker notes for better presentation delivery.
+* **Real-time Validation:** Instant feedback on requirements and readiness.
+* **Slide Preview:** See your presentation structure before downloading.
+* **Style Templates:** Quick-select common presentation styles (sales pitch, technical, etc.).
+* **Markdown Support:** Full markdown formatting detection and processing.
 
 ---
 
-### 🔧 How It Works (Technical Write-up)
+### 🔧 Technical Write-up: AI Presentation Generator
 
-This application bridges the gap between raw text and a styled presentation through a two-step, AI-driven process: **Content Structuring** and **Style Application**.
+#### How Input Text is Parsed and Mapped to Slides
+Our application employs a sophisticated multi-stage approach to transform unstructured text into well-organized presentation slides:
 
-#### 1. How Input Text is Parsed and Mapped to Slides
+1.  **Content Analysis & Preprocessing** The system first analyzes the input text to detect formatting patterns and structure. When markdown is detected (headers, bold text, bullet points), it's processed to extract hierarchical information while preserving semantic meaning. Long-form prose undergoes natural language processing to identify topic boundaries and key concepts.
 
-The core of the content mapping is handled by a Large Language Model (LLM). Instead of simply passing the text to the AI, the application first performs a crucial preliminary step: it analyzes the user-uploaded PowerPoint template to identify all available slide layouts (e.g., 'Title Slide', 'Title and Content', 'Two Column Text').
+2.  **LLM-Powered Intelligent Segmentation** Rather than using fixed slide counts, we leverage large language models (OpenAI, Anthropic Claude, or Google Gemini) to intelligently parse content based on:
+    * **Semantic coherence:** Related concepts are grouped together.
+    * **Content density:** Appropriate information volume per slide.
+    * **Logical flow:** Maintains narrative progression.
+    * **Presentation context:** Considers user guidance (e.g., "sales pitch" vs "technical deep-dive").
 
-The names of these layouts are then dynamically inserted into a detailed system prompt that instructs the AI to act as an expert presentation creator. The prompt commands the AI to read the user's raw text, break it down into logical segments, and structure its response into a strict JSON format. For each segment, the AI must choose the most appropriate layout from the provided list and populate its content fields (like `title` and `body`). This turns the unstructured prose into a structured, slide-by-slide plan, with the AI making editorial decisions on how to best summarize and present the information.
+    The LLM receives the template's available layouts and generates a structured JSON response containing slide-by-slide breakdowns with titles and bullet points optimized for visual presentation.
 
-#### 2. How the App Applies the Visual Style of the Template
+3.  **Dynamic Slide Allocation** The system determines slide count based on content complexity and specified presentation style. Technical presentations might have more detailed slides, while executive summaries are condensed. This adaptive approach ensures optimal information density and audience engagement.
 
-The application achieves style application not by extracting and reapplying individual fonts or colors, but by leveraging the template's built-in **Master Slides and Layouts**. A PowerPoint template (`.pptx` or `.potx`) is a container for pre-designed slide layouts, each with its own placeholder arrangement, typography, color scheme, and branding (like logos).
+#### How Visual Style and Assets are Applied from Templates
+Our template preservation system ensures generated presentations maintain professional consistency with uploaded templates:
 
-When the application receives the structured JSON from the AI, it iterates through the plan, slide by slide. For each slide, it reads the layout name chosen by the AI (e.g., 'Title and Content') and finds the corresponding layout object within the user's template file. It then creates a new slide using that exact layout (`prs.slides.add_slide(slide_layout)`). By doing this, the new slide automatically inherits all the stylistic properties defined in the template for that specific layout. This elegant approach ensures that the final output is perfectly consistent with the user's brand and design, without needing to manually manage any style attributes.
+1.  **Template Analysis & Asset Extraction** Upon template upload, the system performs comprehensive analysis:
+    * **Layout enumeration:** Identifies all slide layouts with their placeholders.
+    * **Image extraction:** Locates and extracts embedded images from slides and master layouts.
+    * **Style preservation:** Maintains font families, color schemes, and formatting rules.
+    * **Placeholder mapping:** Catalogs available content areas (titles, body text, images).
+
+2.  **Intelligent Layout Matching** The system employs fuzzy matching algorithms to pair generated content with appropriate template layouts:
+    * **Semantic matching:** "Title slide" content maps to title layouts.
+    * **Content-type alignment:** Bullet-point content matches content/body layouts.
+    * **Fallback mechanisms:** Ensures graceful degradation when perfect matches aren't available.
+
+3.  **Asset Integration & Style Application** Template images are strategically reused where contextually appropriate, maintaining visual consistency. The original template's typography, color palette, and spacing are preserved through the `python-pptx` library's style retention capabilities.
+
+4.  **Quality Preservation** Rather than generating new visual elements, the system focuses on intelligent content placement within existing template structures, ensuring professional output that maintains the template's intended aesthetic while accommodating new content effectively.
+
+This approach delivers presentations that look professionally designed while being automatically generated from raw text input.
 
 ---
 
@@ -67,6 +95,3 @@ To run this application on your local machine, follow these steps:
 
 ---
 
-### 📜 License
-
-This project is licensed under the MIT License.
